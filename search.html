@@ -113,6 +113,9 @@
                     <th>
                         State
                     </th>
+                    <th>
+                        More Details
+                    </th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -180,7 +183,12 @@
             more.style.color = 'blue';
             more.style.cursor = 'pointer';
 
-            table.append(name,type,city,state);
+            more.addEventListener('click', function () {
+                localStorage.setItem('name', ele.name);
+                window.location.href = "./individual.html"
+            });
+
+            table.append(name,type,city,state,more);
 
             tableBody.append(table);
         });
