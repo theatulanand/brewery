@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Nevbar</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .container{
+            display : flex;
+            width: 80%;
+            justify-content: space-between;
+            align-items: center;
+            /* border: 2px solid red; */
+            margin: auto;
+            margin-top: 50px;
+            background-color: rgb(188, 190, 192);
+            color: rgb(246, 243, 240);
+            border-radius: 10px;
+            height: auto;
+            flex-wrap: warp;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .container h1{
+            padding-left: 20px;
+        }
+
+        .container ul{
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .container ul li{
+            padding: 10px 30px;
+            cursor: pointer;
+        }
+
+        .container ul li:hover{
+            color:rgb(105, 105, 179)
+        }
+
+        #table{
+            margin-top: 30px;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        th,
+        td {
+            padding: 15px;
+        }
+
+        thead>tr>th {
+            background-color: teal;
+            color: white;
+        }
+
+        #select{
+            width: 30px;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        #select select{
+            padding: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">BREWERY</h1>
+
+        <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./search.html">Search</a></li>
+            <li><a href="./individual.html">Individual</a></li>
+        </ul>
+    </div>
+    
+    <div id="select">
+        <select onchange="showType(value)">
+            <option>Select Type</option>
+            <option value = "micro">Micro</option>
+            <option value = "nano">Nano</option>
+            <option value = "regional">Regional</option>
+            <option value = "brewpub">Brewpub</option>
+            <option value = "large">Large</option>
+            <option value = "planing">Planning</option>
+            <option value = "bar">Bar</option>
+            <option value = "contract">Contract</option>
+            <option value = "proprietor">Proprietor</option>
+            <option value = "closed">Closed</option>
+        </select>
+    </div>
+
+    <div id = "table">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        City
+                    </th>
+                    <th>
+                        State
+                    </th>
+                    <th>
+                        More Details
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        1
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    async function getData(){
+        const res = await fetch(`https://api.openbrewerydb.org/breweries?per_page=30`);
+
+        var data = await res.json();
+
+        showData(data);
+    }
+
+    async function showType(type){
+        const res = await fetch(`https://api.openbrewerydb.org/breweries?by_type=${type}&per_page=30`);
+
+        var data = await res.json();
+
+        showData(data);
+    }
+
+    function showData(data){
+        console.log(data);
+
+        document.querySelector('tbody').innerHTML = '';
+
+        data.forEach(function(ele){
+
+            let tableBody = document.getElementById("tableBody");
+
+            let table = document.createElement("tr");
+
+            let name = document.createElement("td");
+            name.innerText = ele.name;
+
+            let type = document.createElement("td");
+            type.innerText = ele.brewery_type;
+
+            let city = document.createElement("td");
+            city.innerText = ele.city;
+
+            let state = document.createElement("td");
+            state.innerText = ele.state;
+
+            var more = document.createElement('td');
+            more.innerText = 'More Details';
+            more.style.color = 'blue';
+            more.style.cursor = 'pointer';
+
+            more.addEventListener('click', function () {
+                localStorage.setItem('name', ele.name);
+                window.location.href = "./individual.html"
+            });
+
+            table.append(name,type,city,state,more);
+
+            tableBody.append(table);
+        });
+    }
+
+
+    getData();
+</script>
+</html>

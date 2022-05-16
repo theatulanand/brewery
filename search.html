@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Nevbar</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .container{
+            display : flex;
+            width: 80%;
+            justify-content: space-between;
+            align-items: center;
+            /* border: 2px solid red; */
+            margin: auto;
+            margin-top: 50px;
+            background-color: rgb(188, 190, 192);
+            color: rgb(246, 243, 240);
+            border-radius: 10px;
+            height: auto;
+            flex-wrap: warp;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .container h1{
+            padding-left: 20px;
+        }
+
+        .container ul{
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .container ul li{
+            padding: 10px 30px;
+            cursor: pointer;
+        }
+
+        .container ul li:hover{
+            color:rgb(105, 105, 179)
+        }
+
+        #search{
+            width: 40%;
+            margin: auto;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #search input{
+            padding: 20px;
+            font-size: 20px;
+        }
+
+        #table{
+            margin-top: 30px;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        th,
+        td {
+            padding: 15px;
+        }
+
+        thead>tr>th {
+            background-color: teal;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">BREWERY</h1>
+
+        <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./search.html">Search</a></li>
+            <li><a href="./individual.html">Individual</a></li>
+        </ul>
+    </div>
+
+    <div id="search">
+        <input type="text" id = "query" placeholder="Search Brewery Here" oninput="debounce()"/>
+    </div>
+
+    <div id = "table">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        City
+                    </th>
+                    <th>
+                        State
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        1
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+<script>
+    async function main(){
+        let data = await searchData();
+        if(data == undefined){
+            return false;
+        }
+
+        displayData(data)
+    }
+
+    async function searchData(){
+        let query = document.getElementById("query").value;
+        let res = await fetch(`https://api.openbrewerydb.org/breweries/search?query=${query}&per_page=30`)
+        let data = await res.json();
+        return data;
+    }
+
+    function displayData(data){
+
+        document.querySelector('tbody').innerHTML = '';
+
+        data.forEach(function(ele){
+
+            let tableBody = document.getElementById("tableBody");
+
+            let table = document.createElement("tr");
+
+            let name = document.createElement("td");
+            name.innerText = ele.name;
+
+            let type = document.createElement("td");
+            type.innerText = ele.brewery_type;
+
+            let city = document.createElement("td");
+            city.innerText = ele.city;
+
+            let state = document.createElement("td");
+            state.innerText = ele.state;
+
+            var more = document.createElement('td');
+            more.innerText = 'More Details';
+            more.style.color = 'blue';
+            more.style.cursor = 'pointer';
+
+            table.append(name,type,city,state);
+
+            tableBody.append(table);
+        });
+    }
+
+    let timerId;
+    function debounce(){
+            if(timerId){
+                clearTimeout(timerId);
+            }
+
+            timerId = setTimeout(function(){
+                main();
+            },1000)
+        }
+</script>
+</html>

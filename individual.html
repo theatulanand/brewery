@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Nevbar</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .container {
+            display: flex;
+            width: 80%;
+            justify-content: space-between;
+            align-items: center;
+            /* border: 2px solid red; */
+            margin: auto;
+            margin-top: 50px;
+            background-color: rgb(188, 190, 192);
+            color: rgb(246, 243, 240);
+            border-radius: 10px;
+            height: auto;
+            flex-wrap: warp;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .container h1 {
+            padding-left: 20px;
+        }
+
+        .container ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .container ul li {
+            padding: 10px 30px;
+            cursor: pointer;
+        }
+
+        .container ul li:hover {
+            color: rgb(105, 105, 179)
+        }
+
+        #display {
+            width: 40%;
+            height: auto;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: auto;
+            margin-top: 0px;
+        }
+
+        th,
+        td {
+            padding: 15px;
+        }
+
+        thead>tr>th {
+            background-color: teal;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="logo">BREWERY</h1>
+
+        <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./search.html">Search</a></li>
+            <li><a href="./individual.html">Individual</a></li>
+        </ul>
+    </div>
+    <div id="display">
+        <table>
+            <thead>
+                <tr>
+                    <th id="name">
+                        Property Name
+                    </th>
+                    <th id="Details">
+                        Property
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    async function getData(name) {
+        const res = await fetch(`https://api.openbrewerydb.org/breweries?by_name=${name}&per_page=3`);
+
+        var data = await res.json();
+
+        showData(data[0]);
+    }
+
+    function showData(data) {
+        console.log(data);
+
+        var dataArr = [
+            {
+                propName: "Name",
+                prop: data.name
+            },
+            {
+                propName: "Id",
+                prop: data.id
+            },
+            {
+                propName: "Phone",
+                prop: data.phone
+            },
+            {
+                propName: "State",
+                prop: data.state
+            },
+            {
+                propName: "City",
+                prop: data.city
+            },
+            {
+                propName: "Country",
+                prop: data.country
+            },
+            {
+                propName: "Postal",
+                prop: data.postal_code
+            }
+        ];
+
+        dataArr.forEach(function(ele){
+            let tableBody = document.getElementById("tableBody");
+
+            let table = document.createElement("tr");
+
+            let name = document.createElement("td");
+            name.innerText = ele.propName;
+
+            let type = document.createElement("td");
+            type.innerText = ele.prop;
+
+            table.append(name,type);
+
+            tableBody.append(table);
+        })
+    }
+
+
+
+    const name = localStorage.getItem("name");
+    getData(name);
+
+
+</script>
+
+</html>
